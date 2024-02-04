@@ -1,0 +1,60 @@
+.overlay__background {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    z-index: 9;
+  }
+  
+  .overlay__container {
+    background-color: rgb(26, 26, 26);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    z-index: 10;
+    padding: 40px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 20px;
+  }
+  
+  .overlay__controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .overlay__close:after {
+    display: inline-block;
+  }
+  
+  .overlay__close {
+    border: none;
+    background-color: transparent;
+    font-size: 36px;
+    cursor: pointer;
+    display: flex;
+  }
+
+  .svg-icon {
+    width: 1em;
+    height: 1em;
+  }
+  
+  .svg-icon path,
+  .svg-icon polygon,
+  .svg-icon rect {
+    fill: #4691f6;
+  }
+  
+  .svg-icon circle {
+    stroke: #4691f6;
+    stroke-width: 1;
+  }
+  
