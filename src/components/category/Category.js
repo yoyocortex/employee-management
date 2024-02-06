@@ -1,96 +1,78 @@
 import React, { Component } from 'react';
-import EditListItem from './editListItem/EditListItem';
-import NewListItem from './newListItem/NewListItem';
-import './Content.css';
 
-export default class Content extends Component {
+import { getCategoryList, deleteCategory, onSubmitNewCategory, updateCategory } from '../../actions/Actions';
+import EditCategory from './editCategory/EditCategory';
+import NewCategory from './newCategory/NewCategory';
+import './Category.css';
+
+export default class Category extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             open: false,
-            list: []
+            list: [],
+            categoryList: []
         }
     };
 
+    componentDidMount = async () => {
+        let getCategoryLists = await getCategoryList();
+        this.setState({ categoryList: getCategoryLists });
+    };
+
     handleEdit = (id) => {
-        const { list } = this.props;
+        const { categoryList } = this.state;
 
-        const selectedItem = list.filter(emp => emp.id === id);
+        const selectedItem = categoryList.filter(emp => emp.id === id);
 
-        this.setState({
-            list: selectedItem[0],
-            open: true
-        });
+        this.setState({ list: selectedItem[0], open: true });
     };
 
     handleChangeCloseProps = () => {
-        this.setState({
-            open: false,
-            list: []
-        });
+        this.setState({ open: false, list: [] });
     };
 
-    render() {
-        const {
-            contentType, categories, onSubmitNew,
-            style, list, update
-        } = this.props;
+    add = async (formData) => {
+        let getCategoryLists = await onSubmitNewCategory(formData);
+        this.setState({ categoryList: getCategoryLists });
+    }
+    
+    update = async (id, formData) => {
+        let getCategoryLists = await updateCategory(id, formData);
+        this.setState({ categoryList: getCategoryLists });
+    }
+    
+    delete = async (id) => {
+        let getCategoryLists = await deleteCategory(id);
+        this.setState({ categoryList: getCategoryLists });
+    }
 
-        const {
-            open
-        } = this.state;
-        
+    render() {
+        const { style } = this.props;
+
+        const { open, categoryList } = this.state;
+
         return (
             <div className='content'>
                 <div className='content-headline'>
-                    <h2>{contentType === 'employee' ? "Manage Employee's" : "Manage Category's"}</h2>
-                    <button className='btn-create' data-toggle="modal" data-target="#addListItem">{contentType === 'employee' ? 'Create a new employee' : 'Create a new category'}</button>
-                    <NewListItem contentType={contentType}
-                        style={style}
-                        onSubmitNew={(formData) => onSubmitNew(formData)}
-                        categories={categories}
-                    />
+                    <h2>Manage Employee's</h2>
+                    <button className='btn-create' data-toggle="modal" data-target="#newCategory">Create a new category</button>
+                    <NewCategory add={this.add} />
                 </div>
-                {(list != null || list.length !== 0) ?
+                {(categoryList != null || categoryList.length !== 0) ?
                     <table className={style === 'light' ? "table table-bordered text-center" : "table table-bordered table-dark text-center"}>
                         <thead>
                             <tr>
-                                {contentType === 'employee' ?
-                                    <>
-                                        <th scope="col">Fullname</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Password</th>
-                                        <th scope="col">Address</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Salary</th>
-                                    </>
-                                    :
-                                    <>
-                                        <th scope="col">Category name</th>
-                                    </>
-                                }
+                                <th scope="col">Category name</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {list.map((item) => (
+                            {categoryList.map((item) => (
                                 <tr key={item.id}>
-                                    {contentType === 'employee' ?
-                                        <>
-                                            <th scope="row">{item.fullname}</th>
-                                            <td>{item.email}</td>
-                                            <td>{item.password}</td>
-                                            <td>{item.address}</td>
-                                            <td>{item.category}</td>
-                                            <td>{item.salary}$</td>
-                                        </>
-                                        :
-                                        <>
-                                            <th scope="row">{item.categoryname}</th>
-                                        </>
-                                    }
+                                    <th scope="row">{item.categoryname}</th>
                                     <td>
                                         <button className='table-btns' onClick={() => this.handleEdit(item.id)} id={item.id}>
                                             <svg className="svg-icon-edit" viewBox="0 1 20 20">
@@ -98,17 +80,13 @@ export default class Content extends Component {
                                             </svg>
                                         </button>
                                         {(open && item.id === this.state.list.id) &&
-                                            <EditListItem contentType={contentType}
+                                            <EditCategory
                                                 handleChangeCloseProps={this.handleChangeCloseProps}
-                                                update={update}
-                                                style={style}
-                                                list={this.state.list}
-                                                open={open} 
-                                                categories={categories} />
+                                                update={this.update} list={this.state.list} open={open} />
                                         }
                                     </td>
                                     <td>
-                                        <button className='table-btns' onClick={() => this.props.delete(item.id)}>
+                                        <button className='table-btns' onClick={() => this.delete(item.id)}>
                                             <svg className="svg-icon-delete" viewBox="0 2 20 20">
                                                 <path fill={style === 'light' ? "rgb(26, 26, 26)" : "white"} d="M16.588,3.411h-4.466c0.042-0.116,0.074-0.236,0.074-0.366c0-0.606-0.492-1.098-1.099-1.098H8.901c-0.607,0-1.098,0.492-1.098,1.098c0,0.13,0.033,0.25,0.074,0.366H3.41c-0.606,0-1.098,0.492-1.098,1.098c0,0.607,0.492,1.098,1.098,1.098h0.366V16.59c0,0.808,0.655,1.464,1.464,1.464h9.517c0.809,0,1.466-0.656,1.466-1.464V5.607h0.364c0.607,0,1.1-0.491,1.1-1.098C17.688,3.903,17.195,3.411,16.588,3.411z M8.901,2.679h2.196c0.202,0,0.366,0.164,0.366,0.366S11.3,3.411,11.098,3.411H8.901c-0.203,0-0.366-0.164-0.366-0.366S8.699,2.679,8.901,2.679z M15.491,16.59c0,0.405-0.329,0.731-0.733,0.731H5.241c-0.404,0-0.732-0.326-0.732-0.731V5.607h10.983V16.59z M16.588,4.875H3.41c-0.203,0-0.366-0.164-0.366-0.366S3.208,4.143,3.41,4.143h13.178c0.202,0,0.367,0.164,0.367,0.366S16.79,4.875,16.588,4.875zM6.705,14.027h6.589c0.202,0,0.366-0.164,0.366-0.366s-0.164-0.367-0.366-0.367H6.705c-0.203,0-0.366,0.165-0.366,0.367S6.502,14.027,6.705,14.027z M6.705,11.83h6.589c0.202,0,0.366-0.164,0.366-0.365c0-0.203-0.164-0.367-0.366-0.367H6.705c-0.203,0-0.366,0.164-0.366,0.367C6.339,11.666,6.502,11.83,6.705,11.83z M6.705,9.634h6.589c0.202,0,0.366-0.164,0.366-0.366c0-0.202-0.164-0.366-0.366-0.366H6.705c-0.203,0-0.366,0.164-0.366,0.366C6.339,9.47,6.502,9.634,6.705,9.634z"></path>
                                             </svg>

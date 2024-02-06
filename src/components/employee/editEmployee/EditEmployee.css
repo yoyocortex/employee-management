@@ -1,0 +1,13 @@
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.edit-list-item-card {
+    border-style: none!important;
+}
+

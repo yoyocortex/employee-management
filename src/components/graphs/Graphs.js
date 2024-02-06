@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+import { getEmployeeList, getCategoryList } from '../../actions/Actions';
 import './Graphs.css';
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -19,29 +21,50 @@ export default class Example extends Component {
     super(props)
 
     this.state = {
-      averageData: []
+      averageData: [],
+      employeeList: [],
+      categoryList: []
     };
   }
 
   static demoUrl = 'https://codesandbox.io/s/stacked-bar-chart-s47i2';
 
-  componentDidMount = () => {
-    this.createAverage();
+  componentDidMount = async () => {
+    const {
+      employeeList,
+      categoryList
+    } = this.state;
+
+    let getEmployeeLists = await getEmployeeList();
+    let getCategoryLists = await getCategoryList();
+    this.setState({ employeeList: getEmployeeLists, categoryList: getCategoryLists });
+    if (categoryList > 0 && employeeList > 0)
+      this.createAverage();
   };
 
-  componentDidUpdate = (previousProps) => {
-    if (previousProps.categoryList !== this.props.categoryList) {
+  componentDidUpdate = (prevProps, prevState) => {
+    const {
+      employeeList,
+      categoryList
+    } = this.state;
+
+    if (prevState.categoryList !== categoryList || prevState.employeeList !== employeeList) {
       this.createAverage();
     }
   };
 
   createAverage = () => {
+    const {
+      employeeList,
+      categoryList
+    } = this.state;
+
     let average = [];
     let instances = [];
     let value = 0;
 
-    this.props.categoryList.forEach(emp => {
-      instances = this.props.employeeList.filter((word) => word.category === emp.categoryname);
+    categoryList.forEach(emp => {
+      instances = employeeList.filter((word) => word.category === emp.categoryname);
 
       for (let index = 0; index < instances.length; index++) {
         const element = instances[index];
@@ -56,26 +79,32 @@ export default class Example extends Component {
 
   render() {
     return (
-      <ResponsiveContainer width="50%" height="80%">
-        <BarChart
-          width={"100%"}
-          height={"100%"}
-          data={this.state.averageData}
-          margin={{
-            top: 20,
-            right: 40,
-            left: 20,
-            bottom: 20,
-          }}
-        >
-          <CartesianGrid strokeDasharray="5 5" />
-          <XAxis dataKey="name" stroke="#8884d8" />
-          <YAxis />
-          <Tooltip cursor={{ fill: '#82e4ff', opacity: '0.2' }} content={<CustomTooltip />} />
-          <Legend />
-          <Bar dataKey="salary" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className='content' style={{ height: '100vh' }}>
+        <div className='content-headline'>
+          <h2>Graph</h2>
+        </div>
+        <ResponsiveContainer width="50%" height="80%">
+          <BarChart
+            width={"100%"}
+            height={"100%"}
+            data={this.state.averageData}
+            margin={{
+              top: 20,
+              right: 40,
+              left: 20,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid strokeDasharray="5 5" />
+            <XAxis dataKey="name" stroke="#8884d8" />
+            <YAxis />
+            <Tooltip cursor={{ fill: '#82e4ff', opacity: '0.2' }} content={<CustomTooltip />} />
+            <Legend />
+            <Bar dataKey="salary" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
     );
   }
 }

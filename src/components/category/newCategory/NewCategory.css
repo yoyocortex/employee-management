@@ -1,0 +1,63 @@
+.close {
+    border-style: hidden;
+    background-color: var(--body_background);
+    scale: 2;
+    transition: transform 0.5s;
+}
+
+.close:hover {
+    border-style: hidden;
+    box-shadow: none;
+    transform: scale(1.1);
+}
+
+.close #light {
+    color: black;
+}
+
+.close #dark {
+    color: white;
+}
+
+.new-employee-card {
+    border-style: none!important;
+}
+
+.card-body {
+    border-color: var(--border_color);
+    background-color: var(--body_background);
+    color: var(--body_color);
+}
+
+.modal-content {
+    border-color: var(--border_color);
+    background-color: var(--body_background);
+    color: var(--body_color);
+}
+
+.modal-body {
+    border-color: var(--border_color);
+    background-color: var(--body_background);
+    color: var(--body_color);
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.dropdown-btn {
+    width: 100%;
+    padding: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    background-color: transparent;
+    border-color: var(--border_color);
+    background-color: var(--body_background);
+    color: var(--body_color);
+}
+
+.dropdown-btn:hover{
+    box-shadow: inset 0 0 0 2px #818181;
+}
+

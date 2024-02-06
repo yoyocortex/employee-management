@@ -3,34 +3,56 @@ import { PieChart, Pie, ResponsiveContainer } from 'recharts';
 import carousel1 from '../../carousel/annie-spratt-hCb3lIB8L8E-unsplash.jpg';
 import carousel2 from '../../carousel/annie-spratt-QckxruozjRg-unsplash.jpg';
 import carousel3 from '../../carousel/kevin-butz-YW0pBd0Uo4g-unsplash.jpg';
+import { getEmployeeList, getCategoryList } from '../../actions/Actions';
 
 export default class Dashboard extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
+            employeeList: [],
+            categoryList: [],
             pieData: []
         }
     }
 
     static demoUrl = 'https://codesandbox.io/s/pie-chart-of-two-levels-gor24';
 
-    componentDidMount = () => {
-        this.createPie();
+    componentDidMount = async () => {
+        const {
+            employeeList,
+            categoryList
+        } = this.state;
+
+        let getEmployeeLists = await getEmployeeList();
+        let getCategoryLists = await getCategoryList();
+        this.setState({ employeeList: getEmployeeLists, categoryList: getCategoryLists });
+        if (categoryList > 0 && employeeList > 0) 
+            this.createPie();
     };
 
-    componentDidUpdate = (previousProps) => {
-        if (previousProps.categoryList !== this.props.categoryList) {
+    componentDidUpdate = (prevProps, prevState) => {
+        const {
+            employeeList,
+            categoryList
+        } = this.state;
+
+        if (prevState.categoryList !== categoryList || prevState.employeeList !== employeeList) {
             this.createPie();
         }
     };
 
     createPie = () => {
+        const {
+            employeeList,
+            categoryList
+        } = this.state;
+
         let data = [];
         let instances = [];
 
-        this.props.categoryList.forEach(emp => {
-            instances = this.props.employeeList.filter((word) => word.category === emp.categoryname);
+        categoryList.forEach(emp => {
+            instances = employeeList.filter((word) => word.category === emp.categoryname);
             data.push({ 'name': emp.categoryname, 'value': instances.length });
         });
         this.setState({ pieData: data });
@@ -49,6 +71,10 @@ export default class Dashboard extends Component {
     };
 
     render() {
+        const {
+            style
+        } = this.props;
+
         return (
             <div className='d-flex flex-row justify-content-evenly align-items-center align-self-center w-100 h-100'>
                 <div className='d-flex flex-column justify-content-around align-items-center align-self-center w-100 h-50'>
@@ -62,7 +88,7 @@ export default class Dashboard extends Component {
                     </ResponsiveContainer>
                 </div>
                 <div className='d-flex flex-column justify-content-around align-items-center align-self-center w-100 h-50'>
-                    <div id="carouselExampleDark" className={this.props.style === 'dark' ? "carousel slide p-5" : "carousel carousel-dark slide p-5"} data-bs-ride="carousel">
+                    <div id="carouselExampleDark" className={style === 'dark' ? "carousel slide p-5" : "carousel carousel-dark slide p-5"} data-bs-ride="carousel">
                         <div className="carousel-indicators">
                             <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
                             <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
