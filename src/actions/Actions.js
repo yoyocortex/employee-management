@@ -10,6 +10,7 @@ const categoryCollectionRef = collection(db, "category");
       return result.docs.map((doc) => ({ ...doc.data(), id: doc.id, }));
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot fetch employee data.");
     });
   };
 
@@ -18,6 +19,7 @@ const categoryCollectionRef = collection(db, "category");
       return getEmployeeList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot create new a employee.");
     });
   };
 
@@ -27,6 +29,7 @@ const categoryCollectionRef = collection(db, "category");
       return getEmployeeList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot delete an employee.");
     });
   };
 
@@ -36,6 +39,7 @@ const categoryCollectionRef = collection(db, "category");
       return getEmployeeList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot update an employee.");
     });
   };
   // ----------CATEGORY----------
@@ -44,6 +48,7 @@ const categoryCollectionRef = collection(db, "category");
         return result.docs.map((doc) => ({ ...doc.data(), id: doc.id, }));
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot fetch category data.");
     });
   };
 
@@ -52,6 +57,7 @@ const categoryCollectionRef = collection(db, "category");
       return getCategoryList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot create a new category.");
     });
   };
 
@@ -61,6 +67,7 @@ const categoryCollectionRef = collection(db, "category");
       return getCategoryList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot delete category.");
     });
   };
 
@@ -70,6 +77,7 @@ const categoryCollectionRef = collection(db, "category");
       return getCategoryList();
     }).catch((error) => {
       console.error('An error occurred:', error);
+      throw new Error("Cannot update category.");
     });
   };
   // -------------------------------------------------CRUD-------------------------------------------------
